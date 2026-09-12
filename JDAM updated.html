@@ -1,0 +1,1360 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>JD Asset Management — Plan. Invest. Grow.</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet"/>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+
+    <style>
+        :root {
+            --primary: #f5f0e8;
+            --secondary: #ffffff;
+            --accent: #d4af37;
+            --accent2: #b8941e;
+            --glass: rgba(255, 255, 255, 0.6);
+            --glass-border: rgba(0, 0, 0, 0.06);
+            --text-primary: #0a0a0a;
+            --text-secondary: rgba(0, 0, 0, 0.75);
+            --text-muted: rgba(0, 0, 0, 0.5);
+            --shadow: 0 25px 60px rgba(0, 0, 0, 0.08);
+            --glow: 0 0 40px rgba(212, 175, 55, 0.2);
+            --radius: 20px;
+            --transition: 0.5s cubic-bezier(0.23, 1, 0.32, 1);
+            --nav-bg: rgba(255, 255, 255, 0.92);
+            --nav-border: rgba(0, 0, 0, 0.06);
+            --card-bg: #ffffff;
+            --border-color: #e5e8ed;
+            --hero-bg: #f5f0e8;
+            --footer-bg: #f5f0e8;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; scroll-behavior: smooth; }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: var(--primary);
+            color: var(--text-primary);
+            overflow-x: hidden;
+            line-height: 1.6;
+            position: relative;
+        }
+
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: var(--primary); }
+        ::-webkit-scrollbar-thumb { background: var(--accent); border-radius: 10px; }
+
+        .orb {
+            position: fixed;
+            border-radius: 50%;
+            filter: blur(80px);
+            opacity: 0.4;
+            z-index: 0;
+            pointer-events: none;
+            animation: floatOrb 20s ease-in-out infinite;
+        }
+        .orb1 { width: 400px; height: 400px; background: radial-gradient(circle, #d4af37, transparent 70%); top: -100px; left: -100px; }
+        .orb2 { width: 500px; height: 500px; background: radial-gradient(circle, #b8941e, transparent 70%); top: 40%; right: -150px; animation-delay: -5s; }
+        .orb3 { width: 350px; height: 350px; background: radial-gradient(circle, #e8c96a, transparent 70%); bottom: -100px; left: 30%; animation-delay: -10s; }
+        @keyframes floatOrb {
+            0%, 100% { transform: translate(0, 0) scale(1); }
+            33% { transform: translate(60px, -40px) scale(1.1); }
+            66% { transform: translate(-40px, 60px) scale(0.95); }
+        }
+
+        #cursor-glow {
+            position: fixed;
+            width: 400px;
+            height: 400px;
+            border-radius: 50%;
+            background: radial-gradient(circle, rgba(212, 175, 55, 0.15) 0%, transparent 70%);
+            pointer-events: none;
+            z-index: 1;
+            transform: translate(-50%, -50%);
+            transition: 0.15s ease-out;
+            filter: blur(20px);
+        }
+
+        #progress {
+            position: fixed;
+            top: 0;
+            left: 0;
+            height: 3px;
+            background: linear-gradient(90deg, var(--accent), var(--accent2));
+            z-index: 9999;
+            width: 0%;
+            transition: 0.1s;
+            box-shadow: 0 0 20px rgba(212, 175, 55, 0.5);
+        }
+
+        nav {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            z-index: 1000;
+            padding: 14px 6%;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background: var(--nav-bg);
+            backdrop-filter: blur(20px) saturate(1.2);
+            border-bottom: 1px solid var(--nav-border);
+            transition: var(--transition);
+        }
+
+        nav.scrolled { box-shadow: 0 10px 40px rgba(0, 0, 0, 0.08); padding: 10px 6%; }
+
+        .logo { display: flex; align-items: center; gap: 10px; text-decoration: none; color: var(--text-primary); }
+
+        .logo-icon {
+            width: 40px;
+            height: 40px;
+            background: linear-gradient(135deg, var(--accent), var(--accent2));
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 900;
+            font-size: 18px;
+            color: #fff;
+            transition: var(--transition);
+            animation: logoPulse 3s ease-in-out infinite;
+        }
+        @keyframes logoPulse {
+            0%, 100% { box-shadow: 0 0 0 0 rgba(212, 175, 55, 0.4); }
+            50% { box-shadow: 0 0 0 12px rgba(212, 175, 55, 0); }
+        }
+        .logo:hover .logo-icon { transform: rotate(360deg) scale(1.1); }
+
+        .logo-text { font-weight: 900; font-size: 18px; letter-spacing: -0.5px; color: var(--text-primary); }
+        .logo-text small { display: block; font-size: 8px; letter-spacing: 2.5px; color: var(--text-muted); font-weight: 400; }
+
+        .nav-links { display: flex; align-items: center; gap: 4px; flex-wrap: wrap; }
+
+        .nav-links a {
+            color: var(--text-secondary);
+            text-decoration: none;
+            font-size: 13px;
+            font-weight: 500;
+            padding: 8px 14px;
+            border-radius: 10px;
+            transition: var(--transition);
+            position: relative;
+        }
+
+        .nav-links a::after {
+            content: '';
+            position: absolute;
+            bottom: 2px;
+            left: 50%;
+            width: 0;
+            height: 2px;
+            background: var(--accent);
+            transition: var(--transition);
+            transform: translateX(-50%);
+            border-radius: 2px;
+        }
+
+        .nav-links a:hover::after, .nav-links a.active::after { width: 60%; }
+        .nav-links a:hover, .nav-links a.active { color: var(--text-primary); }
+
+        .btn-nav {
+            background: linear-gradient(135deg, var(--accent), var(--accent2));
+            color: #fff;
+            border: none;
+            padding: 10px 22px;
+            border-radius: 25px;
+            font-weight: 700;
+            font-size: 13px;
+            cursor: pointer;
+            transition: var(--transition);
+            background-size: 200% 200%;
+            animation: gradientShift 4s ease infinite;
+        }
+        @keyframes gradientShift {
+            0%, 100% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+        }
+
+        .btn-nav:hover { transform: scale(1.05) translateY(-2px); box-shadow: 0 10px 30px rgba(212, 175, 55, 0.4); }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            padding: 14px 32px;
+            border-radius: 14px;
+            font-weight: 700;
+            font-size: 14px;
+            border: none;
+            cursor: pointer;
+            transition: var(--transition);
+            text-decoration: none;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--accent), var(--accent2), var(--accent));
+            background-size: 200% 200%;
+            color: #fff;
+            animation: gradientShift 4s ease infinite;
+        }
+
+        .btn-primary::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+            transition: 0.6s;
+        }
+        .btn-primary:hover::before { left: 100%; }
+        .btn-primary:hover { transform: translateY(-3px) scale(1.02); box-shadow: 0 15px 40px rgba(212, 175, 55, 0.4); }
+
+        .btn-outline { background: transparent; color: var(--text-primary); border: 1.5px solid var(--glass-border); }
+        .btn-outline:hover { background: var(--glass); border-color: var(--accent); transform: translateY(-3px); }
+
+        .btn-glass { background: var(--glass); color: var(--text-primary); border: 1px solid var(--glass-border); backdrop-filter: blur(10px); }
+        .btn-glass:hover { background: rgba(212, 175, 55, 0.15); border-color: var(--accent); transform: translateY(-3px); }
+
+        .hero {
+            padding: 120px 7% 40px;
+            display: flex;
+            align-items: center;
+            position: relative;
+            overflow: hidden;
+            background: transparent;
+            min-height: auto;
+            z-index: 2;
+        }
+
+        .hero-content { position: relative; z-index: 1; max-width: 700px; }
+
+        .hero h1 {
+            font-size: clamp(36px, 5vw, 72px);
+            line-height: 1.05;
+            font-weight: 900;
+            letter-spacing: -2px;
+            margin: 8px 0 14px;
+            color: var(--text-primary);
+        }
+
+        .hero h1 .highlight {
+            background: linear-gradient(135deg, var(--accent), var(--accent2), var(--accent));
+            background-size: 200% 200%;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            animation: gradientShift 4s ease infinite;
+        }
+
+        .hero h1 .word { display: inline-block; opacity: 0; transform: translateY(40px); }
+
+        .hero p {
+            font-size: 17px;
+            color: var(--text-secondary);
+            max-width: 540px;
+            line-height: 1.8;
+            opacity: 0;
+            transform: translateY(20px);
+        }
+
+        .hero-btns { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 20px; opacity: 0; transform: translateY(20px); }
+
+        .marquee {
+            background: linear-gradient(90deg, var(--accent), var(--accent2));
+            color: #fff;
+            padding: 14px 0;
+            overflow: hidden;
+            position: relative;
+            z-index: 2;
+            transform: rotate(-1deg);
+            margin: 20px 0;
+            box-shadow: 0 10px 40px rgba(212, 175, 55, 0.2);
+        }
+
+        .marquee-track {
+            display: flex;
+            gap: 60px;
+            animation: marqueeScroll 25s linear infinite;
+            white-space: nowrap;
+            font-weight: 800;
+            font-size: 15px;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+        }
+        @keyframes marqueeScroll {
+            0% { transform: translateX(0); }
+            100% { transform: translateX(-50%); }
+        }
+
+        .marquee-track span { display: inline-flex; align-items: center; gap: 16px; }
+        .marquee-track span::before { content: '◆'; opacity: 0.5; }
+
+        .about-motive { padding: 40px 7% 60px; text-align: center; background: transparent; position: relative; z-index: 2; }
+
+        .about-motive .label { font-size: 12px; letter-spacing: 4px; color: var(--accent); font-weight: 800; text-transform: uppercase; }
+        .about-motive h2 { font-size: 32px; font-weight: 900; color: var(--text-primary); margin: 8px 0 12px; }
+        .about-motive p { max-width: 700px; margin: 0 auto; color: var(--text-secondary); font-size: 16px; line-height: 1.8; }
+
+        section { padding: 70px 7%; position: relative; background: transparent; z-index: 2; }
+
+        .section-label { font-size: 12px; letter-spacing: 4px; color: var(--accent); font-weight: 800; text-transform: uppercase; text-align: center; }
+
+        .section-title { text-align: center; max-width: 700px; margin: 8px auto 35px; }
+        .section-title h2 { font-size: 34px; font-weight: 900; letter-spacing: -1px; line-height: 1.1; color: var(--text-primary); }
+        .section-title p { color: var(--text-secondary); font-size: 16px; line-height: 1.8; margin-top: 8px; }
+
+        .pricing-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 28px; }
+
+        .pricing-card {
+            background: var(--card-bg);
+            border: 1px solid var(--glass-border);
+            border-radius: var(--radius);
+            padding: 32px 28px;
+            transition: all 0.5s cubic-bezier(0.23, 1, 0.32, 1);
+            position: relative;
+            box-shadow: var(--shadow);
+            overflow: hidden;
+        }
+
+        .pricing-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(212, 175, 55, 0.08), transparent);
+            transition: 0.8s ease;
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        .pricing-card:hover::before { left: 100%; }
+
+        .pricing-card::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            border-radius: var(--radius);
+            padding: 1.5px;
+            background: linear-gradient(135deg, transparent 30%, rgba(212, 175, 55, 0.5), transparent 70%);
+            -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+            -webkit-mask-composite: xor;
+            mask-composite: exclude;
+            opacity: 0;
+            transition: opacity 0.5s ease;
+            pointer-events: none;
+        }
+
+        .pricing-card:hover::after { opacity: 1; }
+
+        .pricing-card:hover {
+            transform: translateY(-6px);
+            box-shadow: 0 30px 70px rgba(212, 175, 55, 0.15), 0 15px 40px rgba(0, 0, 0, 0.08);
+            border-color: rgba(212, 175, 55, 0.25);
+        }
+
+        .pricing-card.popular { border-color: var(--accent); box-shadow: 0 20px 50px rgba(212, 175, 55, 0.15); }
+        .pricing-card.popular::after { opacity: 0.4; }
+        .pricing-card.popular:hover {
+            box-shadow: 0 35px 80px rgba(212, 175, 55, 0.25), 0 15px 40px rgba(0, 0, 0, 0.1);
+            transform: translateY(-8px);
+        }
+
+        .fd-badge {
+            display: inline-block;
+            background: linear-gradient(135deg, var(--accent), var(--accent2));
+            color: #fff;
+            padding: 5px 14px;
+            border-radius: 25px;
+            font-size: 10px;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 0.6px;
+            transition: transform 0.4s ease;
+            position: relative;
+            z-index: 2;
+        }
+
+        .pricing-card:hover .fd-badge { transform: scale(1.05); }
+
+        .popular-badge {
+            position: absolute;
+            top: 18px;
+            right: 18px;
+            background: linear-gradient(135deg, var(--accent), var(--accent2));
+            color: #fff;
+            padding: 5px 14px;
+            border-radius: 25px;
+            font-size: 10px;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 0.6px;
+            z-index: 2;
+            transition: transform 0.4s ease;
+        }
+
+        .pricing-card:hover .popular-badge { transform: scale(1.05); }
+
+        .pricing-card .price {
+            font-size: 38px;
+            font-weight: 950;
+            margin: 16px 0 14px;
+            letter-spacing: -1.5px;
+            color: var(--text-primary);
+            transition: color 0.4s ease;
+            position: relative;
+            z-index: 2;
+            line-height: 1.1;
+        }
+
+        .pricing-card:hover .price { color: var(--accent2); }
+
+        .pricing-card .price small { font-size: 14px; font-weight: 500; color: var(--text-muted); letter-spacing: 0; }
+
+        .expected-label {
+            font-size: 11px;
+            letter-spacing: 1.5px;
+            text-transform: uppercase;
+            font-weight: 800;
+            color: var(--text-muted);
+            margin-bottom: 2px;
+            position: relative;
+            z-index: 2;
+        }
+
+        .expected-price {
+            font-size: 38px;
+            font-weight: 950;
+            letter-spacing: -1.5px;
+            color: var(--accent);
+            margin: 4px 0 4px;
+            position: relative;
+            z-index: 2;
+            line-height: 1.1;
+            transition: all 0.4s ease;
+        }
+
+        .pricing-card:hover .expected-price { color: var(--accent2); transform: scale(1.03); }
+        .expected-price small { font-size: 14px; font-weight: 600; color: var(--text-muted); letter-spacing: 0; margin-left: 4px; }
+
+        .return-disclaimer {
+            font-size: 10px;
+            color: var(--text-muted);
+            line-height: 1.55;
+            margin: 4px 0 18px;
+            position: relative;
+            z-index: 2;
+            font-style: italic;
+        }
+
+        .pricing-card ul { list-style: none; padding: 0; margin: 16px 0 24px; position: relative; z-index: 2; }
+        .pricing-card ul li {
+            padding: 8px 0;
+            font-size: 14px;
+            color: var(--text-secondary);
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+            transition: color 0.3s ease, transform 0.3s ease;
+            line-height: 1.5;
+        }
+        .pricing-card:hover ul li { color: var(--text-primary); }
+        .pricing-card ul li:hover { transform: translateX(4px); }
+
+        .pricing-card ul li::before {
+            content: '✓';
+            color: var(--accent);
+            font-weight: 900;
+            font-size: 14px;
+            flex-shrink: 0;
+            margin-top: 2px;
+            transition: transform 0.3s ease;
+        }
+        .pricing-card ul li:hover::before { transform: scale(1.3); }
+
+        .pricing-card h3 {
+            font-size: 22px;
+            font-weight: 900;
+            letter-spacing: -0.5px;
+            margin-bottom: 4px;
+            color: var(--text-primary);
+            position: relative;
+            z-index: 2;
+            transition: color 0.4s ease;
+        }
+        .pricing-card:hover h3 { color: var(--accent); }
+
+        .offer-banner {
+            margin: 28px auto 0;
+            max-width: 700px;
+            text-align: center;
+            background: var(--card-bg);
+            border: 1px solid var(--glass-border);
+            padding: 16px 24px;
+            border-radius: 16px;
+            box-shadow: var(--shadow);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .offer-banner::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(212, 175, 55, 0.15), transparent);
+            animation: shine 4s ease-in-out infinite;
+        }
+        @keyframes shine {
+            0% { left: -100%; }
+            50%, 100% { left: 100%; }
+        }
+
+        .offer-banner strong { color: var(--accent); }
+
+        .connect-btn {
+            background: linear-gradient(135deg, var(--accent), var(--accent2), var(--accent));
+            background-size: 200% 200%;
+            color: #fff;
+            padding: 12px 28px;
+            border-radius: 12px;
+            font-weight: 700;
+            border: none;
+            cursor: pointer;
+            font-size: 14px;
+            transition: var(--transition);
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            width: 100%;
+            justify-content: center;
+            animation: gradientShift 4s ease infinite;
+            position: relative;
+            overflow: hidden;
+            z-index: 2;
+        }
+        .connect-btn:hover { transform: translateY(-3px); box-shadow: 0 15px 40px rgba(212, 175, 55, 0.4); }
+
+        .process {
+            background: rgba(255, 255, 255, 0.4);
+            border-top: 1px solid var(--glass-border);
+            border-bottom: 1px solid var(--glass-border);
+            backdrop-filter: blur(10px);
+        }
+
+        .process-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; }
+
+        .process-step {
+            background: var(--card-bg);
+            border: 1px solid var(--glass-border);
+            border-radius: var(--radius);
+            padding: 22px;
+            transition: var(--transition);
+            border-top: 4px solid var(--accent);
+            box-shadow: var(--shadow);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .process-step::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 0;
+            background: linear-gradient(180deg, rgba(212, 175, 55, 0.08), transparent);
+            transition: 0.5s;
+        }
+        .process-step:hover::before { height: 100%; }
+
+        .process-step:hover {
+            transform: translateY(-8px);
+            border-color: rgba(212, 175, 55, 0.3);
+            box-shadow: 0 20px 50px rgba(212, 175, 55, 0.15);
+        }
+
+        .process-step .num { color: var(--accent); font-weight: 900; font-size: 12px; letter-spacing: 1px; text-transform: uppercase; position: relative; z-index: 1; }
+        .process-step h3 { margin: 8px 0 4px; font-size: 16px; color: var(--text-primary); position: relative; z-index: 1; }
+        .process-step p { color: var(--text-secondary); font-size: 14px; line-height: 1.6; position: relative; z-index: 1; }
+
+        .faq { max-width: 750px; margin: auto; }
+        .faq-item { border-bottom: 1px solid var(--glass-border); padding: 16px 0; transition: var(--transition); }
+        .faq-item:first-child { border-top: 1px solid var(--glass-border); }
+        .faq-item:hover { padding-left: 8px; }
+
+        .faq-item summary {
+            font-weight: 700;
+            cursor: pointer;
+            font-size: 15px;
+            list-style: none;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 4px 0;
+            color: var(--text-primary);
+            transition: var(--transition);
+        }
+        .faq-item summary:hover { color: var(--accent); }
+        .faq-item summary::-webkit-details-marker { display: none; }
+        .faq-item summary::after { content: '+'; font-size: 24px; color: var(--accent); transition: var(--transition); font-weight: 300; }
+        .faq-item details[open] summary::after { content: '−'; transform: rotate(180deg); }
+        .faq-item p { color: var(--text-secondary); padding-top: 10px; line-height: 1.7; font-size: 14px; }
+
+        .milestone {
+            background: rgba(255, 255, 255, 0.4);
+            border-top: 1px solid var(--glass-border);
+            border-bottom: 1px solid var(--glass-border);
+            backdrop-filter: blur(10px);
+        }
+
+        .milestone-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; }
+
+        .milestone-box {
+            background: var(--card-bg);
+            border: 1px solid var(--glass-border);
+            border-radius: var(--radius);
+            padding: 32px;
+            transition: var(--transition);
+            box-shadow: var(--shadow);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .milestone-box::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(212, 175, 55, 0.08), transparent 50%);
+            animation: rotateSlow 20s linear infinite;
+            pointer-events: none;
+        }
+        @keyframes rotateSlow {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .milestone-box:hover {
+            border-color: rgba(212, 175, 55, 0.4);
+            transform: translateY(-6px);
+            box-shadow: 0 30px 60px rgba(212, 175, 55, 0.15);
+        }
+
+        .milestone-box .big {
+            font-size: clamp(48px, 6vw, 72px);
+            font-weight: 950;
+            background: linear-gradient(135deg, var(--accent), var(--accent2), var(--accent));
+            background-size: 200% 200%;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            letter-spacing: -2px;
+            animation: gradientShift 4s ease infinite;
+            position: relative;
+            z-index: 1;
+        }
+
+        .milestone-box .label { font-size: 11px; letter-spacing: 2px; color: var(--text-muted); text-transform: uppercase; font-weight: 700; position: relative; z-index: 1; }
+
+        .mini-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-top: 16px; position: relative; z-index: 1; }
+
+        .mini-grid .mini {
+            background: var(--card-bg);
+            border: 1px solid var(--glass-border);
+            padding: 14px;
+            border-radius: 12px;
+            text-align: center;
+            transition: var(--transition);
+        }
+        .mini-grid .mini:hover { border-color: rgba(212, 175, 55, 0.4); transform: translateY(-4px) scale(1.05); }
+        .mini-grid .mini b { font-size: 20px; color: var(--accent); display: block; }
+        .mini-grid .mini span { font-size: 10px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.5px; }
+
+        .about-company {
+            background: rgba(255, 255, 255, 0.4);
+            border-top: 1px solid var(--glass-border);
+            border-bottom: 1px solid var(--glass-border);
+            backdrop-filter: blur(10px);
+        }
+
+        .about-company-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 40px; align-items: center; }
+
+        .about-company-box {
+            background: var(--card-bg);
+            border: 1px solid var(--glass-border);
+            border-radius: var(--radius);
+            padding: 28px;
+            box-shadow: var(--shadow);
+            transition: var(--transition);
+        }
+        .about-company-box:hover { transform: translateY(-6px); box-shadow: 0 30px 60px rgba(212, 175, 55, 0.15); }
+
+        .about-company-stats { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-top: 18px; }
+        .about-company-stats div {
+            background: var(--primary);
+            border: 1px solid var(--glass-border);
+            border-radius: 12px;
+            padding: 14px;
+            text-align: center;
+            transition: var(--transition);
+        }
+        .about-company-stats div:hover {
+            border-color: var(--accent);
+            transform: translateY(-4px) scale(1.05);
+            background: rgba(212, 175, 55, 0.08);
+        }
+        .about-company-stats b { display: block; font-size: 22px; color: var(--accent); }
+        .about-company-stats span { font-size: 11px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.5px; }
+
+        .newsletter-wrap {
+            background: var(--card-bg);
+            border: 1px solid var(--glass-border);
+            border-radius: var(--radius);
+            padding: 36px;
+            text-align: center;
+            max-width: 600px;
+            margin: auto;
+            box-shadow: var(--shadow);
+            transition: var(--transition);
+        }
+        .newsletter-wrap:hover { transform: translateY(-4px); box-shadow: 0 30px 60px rgba(212, 175, 55, 0.15); }
+        .newsletter-wrap h3 { font-size: 22px; color: var(--text-primary); }
+        .newsletter-wrap p { color: var(--text-secondary); margin-bottom: 16px; }
+        .newsletter-wrap .input-group { display: flex; gap: 10px; flex-wrap: wrap; justify-content: center; }
+        .newsletter-wrap input {
+            flex: 1;
+            min-width: 200px;
+            padding: 12px 20px;
+            border-radius: 12px;
+            border: 1px solid var(--glass-border);
+            background: var(--primary);
+            color: var(--text-primary);
+            font-size: 14px;
+            transition: var(--transition);
+        }
+        .newsletter-wrap input:focus {
+            outline: none;
+            border-color: var(--accent);
+            box-shadow: 0 0 0 3px rgba(212, 175, 55, 0.08);
+            transform: scale(1.02);
+        }
+
+        .contact-section {
+            text-align: center;
+            background: rgba(255, 255, 255, 0.4);
+            border-top: 1px solid var(--glass-border);
+            backdrop-filter: blur(10px);
+        }
+        .contact-section .btn { margin: 5px; }
+        .contact-links { display: flex; flex-wrap: wrap; gap: 12px; justify-content: center; margin-top: 10px; }
+
+        footer {
+            background: var(--footer-bg);
+            border-top: 1px solid var(--glass-border);
+            padding: 30px 7%;
+            text-align: center;
+            font-size: 12px;
+            color: var(--text-muted);
+            line-height: 1.8;
+            position: relative;
+            z-index: 2;
+        }
+        footer .social { display: flex; gap: 14px; justify-content: center; margin-bottom: 12px; }
+        footer .social a { color: var(--text-muted); text-decoration: none; font-size: 20px; transition: var(--transition); }
+        footer .social a:hover { color: var(--accent); transform: translateY(-4px) scale(1.2); }
+        footer a { color: var(--accent); text-decoration: none; }
+        footer .legal { max-width: 700px; margin: 8px auto 0; font-size: 10px; color: var(--text-muted); }
+
+        .toast {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            background: var(--secondary);
+            border: 1px solid var(--glass-border);
+            color: var(--text-primary);
+            padding: 16px 28px;
+            border-radius: 14px;
+            z-index: 99999;
+            box-shadow: var(--shadow);
+            backdrop-filter: blur(20px);
+            transform: translateY(100px);
+            opacity: 0;
+            transition: var(--transition);
+            max-width: 380px;
+            font-size: 14px;
+        }
+        .toast.show { transform: translateY(0); opacity: 1; }
+        .toast.success { border-color: #22c55e; }
+        .toast.error { border-color: #ef4444; }
+
+        @media (max-width: 1024px) {
+            .hero { padding: 100px 5% 20px; }
+            .hero h1 { font-size: 40px; }
+            .about-motive { padding: 30px 5% 40px; }
+            .pricing-grid { grid-template-columns: 1fr 1fr; }
+            .process-grid { grid-template-columns: 1fr 1fr; }
+            .about-company-grid { grid-template-columns: 1fr; }
+        }
+
+        @media (max-width: 768px) {
+            nav { padding: 12px 5%; flex-wrap: wrap; }
+            .logo-text { font-size: 15px; }
+            .logo-icon { width: 34px; height: 34px; font-size: 15px; }
+            .logo-text small { font-size: 7px; }
+            .nav-links { gap: 2px; }
+            .nav-links a:not(.btn-nav) { display: none; }
+            .nav-links .btn-nav { padding: 6px 14px; font-size: 11px; }
+
+            .hero { padding: 90px 5% 15px; }
+            .hero h1 { font-size: 34px; }
+            .hero p { font-size: 15px; }
+
+            .about-motive { padding: 20px 5% 30px; }
+            .about-motive h2 { font-size: 26px; }
+            .about-motive p { font-size: 14px; }
+
+            section { padding: 50px 5%; }
+            .section-title h2 { font-size: 28px; }
+            .section-title p { font-size: 14px; }
+
+            .pricing-grid, .process-grid, .milestone-grid, .about-company-grid { grid-template-columns: 1fr; }
+            .pricing-card { padding: 24px 20px; }
+            .pricing-card .price { font-size: 34px; }
+            .expected-price { font-size: 34px; }
+
+            .btn { padding: 12px 24px; font-size: 13px; }
+            .newsletter-wrap { padding: 24px; }
+            .newsletter-wrap .input-group { flex-direction: column; }
+            .newsletter-wrap input { min-width: auto; width: 100%; }
+            .toast { bottom: 16px; right: 16px; left: 16px; max-width: none; font-size: 13px; padding: 14px 20px; }
+            .orb { opacity: 0.25; }
+        }
+
+        @media (max-width: 480px) {
+            .hero { padding: 80px 5% 10px; }
+            .hero h1 { font-size: 28px; }
+            .hero-btns { flex-direction: column; }
+            .hero-btns .btn { width: 100%; justify-content: center; }
+            .about-motive { padding: 15px 5% 20px; }
+            .about-motive h2 { font-size: 22px; }
+            .about-motive p { font-size: 13px; }
+            .section-title h2 { font-size: 24px; }
+            .pricing-grid { grid-template-columns: 1fr; }
+            .process-grid { grid-template-columns: 1fr; }
+            .milestone-grid { grid-template-columns: 1fr; }
+            .about-company-grid { grid-template-columns: 1fr; }
+            .mini-grid { grid-template-columns: 1fr; }
+            .about-company-stats { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+    <div class="orb orb1"></div>
+    <div class="orb orb2"></div>
+    <div class="orb orb3"></div>
+
+    <div id="progress"></div>
+    <div id="cursor-glow"></div>
+    <div id="toast" class="toast"></div>
+
+    <!-- ===== NAV ===== -->
+    <nav id="navbar">
+        <a href="#" class="logo">
+            <div class="logo-icon">JD</div>
+            <div class="logo-text">
+                JD ASSET MANAGEMENT
+                <small>PLAN. INVEST. GROW.</small>
+            </div>
+        </a>
+        <div class="nav-links">
+            <a href="#pricing">Pricing</a>
+            <a href="#process">How We Work</a>
+            <a href="#faq">FAQ</a>
+            <a href="#milestone">Milestone</a>
+            <a href="#about-company">About</a>
+            <a href="#contact">Contact</a>
+            <button class="btn-nav" onclick="document.getElementById('contact').scrollIntoView()">Connect With Us</button>
+        </div>
+    </nav>
+
+    <!-- ===== HERO ===== -->
+    <section class="hero" id="home">
+        <div class="hero-content">
+            <h1 id="heroHeading">
+                <span class="word">Where</span>
+                <span class="word">Capital</span>
+                <span class="word">Gets</span>
+                <span class="word">a</span>
+                <br>
+                <span class="highlight word">Strategic</span>
+                <span class="highlight word">Edge.</span>
+            </h1>
+            <p id="heroPara">
+                Research-led insights, financial education, portfolio guidance,
+                and structured mentorship — helping you learn, grow, and build
+                better financial habits.
+            </p>
+            <div class="hero-btns" id="heroBtns">
+                <a href="#pricing" class="btn btn-primary">🚀 Explore Plans</a>
+                <a href="#contact" class="btn btn-glass">💬 Connect With Us</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- ===== MARQUEE ===== -->
+    <div class="marquee">
+        <div class="marquee-track">
+            <span>Plan</span><span>Invest</span><span>Grow</span>
+            <span>Research-Led</span><span>Portfolio Guidance</span>
+            <span>Risk Management</span><span>Wealth Creation</span>
+            <span>Plan</span><span>Invest</span><span>Grow</span>
+            <span>Research-Led</span><span>Portfolio Guidance</span>
+            <span>Risk Management</span><span>Wealth Creation</span>
+        </div>
+    </div>
+
+    <!-- ===== ABOUT + MOTIVE ===== -->
+    <section class="about-motive" id="about">
+        <div class="label">About JD Asset Management</div>
+        <h2>Clarity Over Noise.</h2>
+        <p>
+            JD Asset Management is built around financial education, research, and disciplined investing.
+            Our objective is to help investors understand the <em>"why"</em> behind every investment decision,
+            replacing market noise with structured knowledge, clear strategy, and long-term wealth creation.
+        </p>
+    </section>
+
+    <!-- ===== PRICING ===== -->
+    <section class="pricing" id="pricing">
+        <div class="section-label">Our Plans</div>
+        <div class="section-title">
+            <h2>Choose Your Growth Path</h2>
+            <p>Start small, learn the process, and upgrade when you're ready.</p>
+        </div>
+        <div class="pricing-grid">
+            <!-- FD Plan -->
+            <div class="pricing-card popular">
+                <span class="fd-badge">🏦 Fixed Deposit</span>
+                <span class="popular-badge">⭐ Best Returns</span>
+                <h3>FD Plan</h3>
+                <div class="price">9-10% <small>p.a.</small></div>
+                <ul>
+                    <li>Fixed Returns — 9% to 10% per annum</li>
+                    <li>Minimum Tenure: 3 Months</li>
+                    <li>100% Capital Protection</li>
+                    <li>No Market Risk</li>
+                    <li>Guaranteed Payout on Maturity</li>
+                    <li>Flexible Investment Amount</li>
+                </ul>
+                <div style="font-size:11px;color:var(--text-muted);margin:8px 0 16px;position:relative;z-index:2;">
+                    <b>Minimum tenure:</b> 3 months · <b>Returns:</b> 9-10% p.a. (fixed)
+                </div>
+                <a href="#contact" class="connect-btn">🤝 Connect With Us</a>
+            </div>
+
+            <!-- Starter Plan -->
+            <div class="pricing-card">
+                <h3>Starter Plan</h3>
+                <div class="price">₹299 <small>/ investment</small></div>
+                <div class="expected-label">Expected Return</div>
+                <div class="expected-price">8–11% <small>p.a.</small></div>
+                <div class="return-disclaimer">Returns are not guaranteed as it is based on market condition.</div>
+                <ul>
+                    <li>Portfolio Review</li>
+                    <li>5–8 Stock Watchlist</li>
+                    <li>Beginner Guidance</li>
+                    <li>Call Support (Mon-Fri, 11AM-5PM)</li>
+                    <li>Minimum Risk Diversification</li>
+                    <li>Mutual Fund Guidance</li>
+                    <li>Broker Selection Guidance</li>
+                </ul>
+                <a href="#contact" class="connect-btn">🤝 Connect With Us</a>
+            </div>
+
+            <!-- Growth Plan -->
+            <div class="pricing-card">
+                <span class="popular-badge">⭐ Popular</span>
+                <h3>Growth Plan</h3>
+                <div class="price">₹349 <small>/ investment</small></div>
+                <div class="expected-label">Expected Return</div>
+                <div class="expected-price">9–13% <small>p.a.</small></div>
+                <div class="return-disclaimer">Returns are not guaranteed as it is based on market condition.</div>
+                <ul>
+                    <li>All Starter Features</li>
+                    <li>Personalized Stock Guidance</li>
+                    <li>Stock Market Learning (From Scratch)</li>
+                    <li>Weekly Portfolio Review</li>
+                    <li>Minimum Risk Diversification</li>
+                    <li>Mutual Fund Guidance</li>
+                    <li>Broker Selection Guidance</li>
+                    <li>Priority Call Support</li>
+                </ul>
+                <a href="#contact" class="connect-btn">🤝 Connect With Us</a>
+            </div>
+        </div>
+        <div class="offer-banner">
+            ⏳ <strong>Limited Time Offer:</strong> Flat 15% OFF on Starter & Growth plans
+        </div>
+    </section>
+
+    <!-- ===== HOW WE WORK ===== -->
+    <section class="process" id="process">
+        <div class="section-label">How We Work</div>
+        <div class="section-title">
+            <h2>A Simple, Research-First Process</h2>
+            <p>Clear steps. Better understanding. More disciplined decisions.</p>
+        </div>
+        <div class="process-grid">
+            <div class="process-step">
+                <div class="num">01 · Understand</div>
+                <h3>Know Your Starting Point</h3>
+                <p>Understand your existing portfolio, goals, and investment knowledge.</p>
+            </div>
+            <div class="process-step">
+                <div class="num">02 · Research</div>
+                <h3>Study the Opportunity</h3>
+                <p>Look at the business, sector, market context, and risk factors.</p>
+            </div>
+            <div class="process-step">
+                <div class="num">03 · Build</div>
+                <h3>Create a Framework</h3>
+                <p>Use diversification and disciplined allocation rather than impulsive decisions.</p>
+            </div>
+            <div class="process-step">
+                <div class="num">04 · Review</div>
+                <h3>Learn & Improve</h3>
+                <p>Review outcomes, update assumptions, and keep improving the process.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- ===== FAQ ===== -->
+    <section id="faq">
+        <div class="section-label">FAQ</div>
+        <div class="section-title">
+            <h2>Frequently Asked Questions</h2>
+        </div>
+        <div class="faq">
+            <details class="faq-item">
+                <summary>What is the minimum tenure for FD Plan?</summary>
+                <p>The minimum tenure for the Fixed Deposit plan is 3 months. You can choose to invest for longer durations as well.</p>
+            </details>
+            <details class="faq-item">
+                <summary>Are the returns guaranteed in FD Plan?</summary>
+                <p>Yes! The FD Plan offers fixed returns of 9-10% per annum with 100% capital protection. No market risk involved.</p>
+            </details>
+            <details class="faq-item">
+                <summary>Are the return ranges for Stock plans guaranteed?</summary>
+                <p>No. Any return range shown for stock market plans is not guaranteed. Investments in securities are subject to market risks.</p>
+            </details>
+            <details class="faq-item">
+                <summary>What are the call support timings?</summary>
+                <p>Our dedicated call support is available from Monday to Friday, 11AM to 5PM. You can reach out to us during these hours for any queries.</p>
+            </details>
+        </div>
+    </section>
+
+    <!-- ===== MILESTONE ===== -->
+    <section class="milestone" id="milestone">
+        <div class="section-label">Thank You</div>
+        <div class="section-title">
+            <h2>Thank You For Your Trust.</h2>
+            <p>We've crossed an important milestone — and this is just the beginning.</p>
+        </div>
+        <div class="milestone-grid">
+            <div class="milestone-box">
+                <div class="label">Assets Under Guidance</div>
+                <div class="big" data-count="100000">₹0+</div>
+                <p style="color:var(--text-secondary);position:relative;z-index:1;">Our first AUM milestone reflects the trust and continued support of the people we work with.</p>
+            </div>
+            <div class="milestone-box">
+                <div class="label">The JD Mission</div>
+                <h2 style="font-size:28px;margin:8px 0 4px;position:relative;z-index:1;">Plan. Invest. Grow.</h2>
+                <p style="color:var(--text-secondary);position:relative;z-index:1;">Learn from scratch. Grow with strategy. Build wealth with a long-term, research-first mindset.</p>
+                <div class="mini-grid">
+                    <div class="mini"><b>01</b><span>Learn</span></div>
+                    <div class="mini"><b>02</b><span>Research</span></div>
+                    <div class="mini"><b>03</b><span>Build</span></div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ===== ABOUT COMPANY ===== -->
+    <section class="about-company" id="about-company">
+        <div class="section-label" style="color:var(--accent);">About The Company</div>
+        <div class="section-title">
+            <h2>Building Wealth With Integrity.</h2>
+            <p>JD Asset Management is a trusted name in financial education and investment guidance.</p>
+        </div>
+        <div class="about-company-grid">
+            <div>
+                <p style="color:var(--text-secondary);line-height:1.8;font-size:16px;margin-bottom:16px;">
+                    Founded with a vision to democratize financial knowledge, JD Asset Management provides research-backed insights, portfolio guidance, and structured mentorship to help individuals make informed investment decisions.
+                </p>
+                <p style="color:var(--text-secondary);line-height:1.8;font-size:16px;">
+                    We believe in transparency, discipline, and long-term value creation — empowering our clients to navigate the markets with confidence and clarity.
+                </p>
+            </div>
+            <div class="about-company-box">
+                <h3>Our Core Values</h3>
+                <p style="font-style:italic;color:var(--text-secondary);font-size:16px;">
+                    "Discipline over impulse. Knowledge over noise. Growth over speculation."
+                </p>
+                <div class="about-company-stats">
+                    <div><b>R</b><span>Research</span></div>
+                    <div><b>D</b><span>Discipline</span></div>
+                    <div><b>G</b><span>Growth</span></div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ===== NEWSLETTER ===== -->
+    <section style="background:transparent;border-top:1px solid var(--glass-border);border-bottom:1px solid var(--glass-border);">
+        <div class="newsletter-wrap">
+            <h3>📬 Stay Updated</h3>
+            <p>Subscribe for market insights and educational content.</p>
+            <div class="input-group">
+                <input type="email" id="newsletterEmail" placeholder="Enter your email" required />
+                <button class="btn btn-primary" id="newsletterBtn">Subscribe</button>
+            </div>
+        </div>
+    </section>
+
+    <!-- ===== CONTACT ===== -->
+    <section class="contact-section" id="contact">
+        <div class="section-label" style="color:var(--accent);">Let's Build Together</div>
+        <div class="section-title">
+            <h2>Ready to Give Your Capital a Strategic Edge?</h2>
+            <p>Connect with Devansh Jaiswal for plan details and enquiries.</p>
+        </div>
+        <div class="contact-links">
+            <a href="tel:9301527052" class="btn btn-primary">📞 9301527052</a>
+            <a href="https://wa.me/919301527052" class="btn btn-glass">💬 WhatsApp</a>
+            <a href="mailto:devanshjaiswal.ind@gmail.com" class="btn btn-outline">✉ Email</a>
+        </div>
+    </section>
+
+    <!-- ===== FOOTER ===== -->
+    <footer>
+        <div class="social">
+            <a href="#" aria-label="LinkedIn">🔗</a>
+            <a href="#" aria-label="YouTube">▶️</a>
+            <a href="#" aria-label="Instagram">📸</a>
+            <a href="#" aria-label="Twitter">🐦</a>
+        </div>
+        <p>© 2026 JD Asset Management. All rights reserved.</p>
+        <div class="legal">
+            *Returns are not guaranteed for stock market plans. Fixed Deposit returns are fixed and guaranteed.
+            Investments in securities are subject to market risks. Past performance is not indicative of future results.
+            Information on this website is for educational and informational purposes and should not be construed as
+            a guarantee of returns or personalised investment advice. Please make investment decisions based on your
+            own research and risk profile.
+            <br /><br />
+            <strong>Educational Guidance &amp; Mentorship Only.</strong>
+        </div>
+    </footer>
+
+    <script>
+        const toastEl = document.getElementById('toast');
+        let toastTimeout;
+
+        function showToast(msg, type = '') {
+            toastEl.textContent = msg;
+            toastEl.className = 'toast ' + type;
+            clearTimeout(toastTimeout);
+            void toastEl.offsetWidth;
+            toastEl.classList.add('show');
+            toastTimeout = setTimeout(() => toastEl.classList.remove('show'), 4000);
+        }
+
+        const cursorGlow = document.getElementById('cursor-glow');
+        document.addEventListener('mousemove', (e) => {
+            cursorGlow.style.left = e.clientX + 'px';
+            cursorGlow.style.top = e.clientY + 'px';
+        });
+
+        const nav = document.getElementById('navbar');
+        const progress = document.getElementById('progress');
+
+        window.addEventListener('scroll', () => {
+            const scrolled = window.scrollY;
+            const maxScroll = document.documentElement.scrollHeight - window.innerHeight;
+            progress.style.width = (scrolled / maxScroll * 100) + '%';
+            nav.classList.toggle('scrolled', scrolled > 50);
+
+            let current = '';
+            document.querySelectorAll('section[id], .hero, .about-motive, .about-company').forEach(el => {
+                const top = el.offsetTop - 120;
+                if (scrolled >= top) current = el.id || '';
+            });
+            document.querySelectorAll('.nav-links a[href^="#"]').forEach(a => {
+                a.classList.toggle('active', a.getAttribute('href') === '#' + current);
+            });
+        });
+
+        gsap.registerPlugin(ScrollTrigger);
+
+        gsap.to('.hero h1 .word', {
+            opacity: 1, y: 0, duration: 1, stagger: 0.1, ease: 'power3.out', delay: 0.3
+        });
+        gsap.to('#heroPara', { opacity: 1, y: 0, duration: 1, ease: 'power3.out', delay: 1.2 });
+        gsap.to('#heroBtns', { opacity: 1, y: 0, duration: 1, ease: 'power3.out', delay: 1.5 });
+
+        const hero = document.querySelector('.hero');
+        hero.addEventListener('mousemove', (e) => {
+            const x = (e.clientX / window.innerWidth - 0.5) * 20;
+            const y = (e.clientY / window.innerHeight - 0.5) * 20;
+            gsap.to('.hero-content', { x: x, y: y, duration: 0.8, ease: 'power2.out' });
+        });
+
+        gsap.to('.hero-content', {
+            scrollTrigger: { trigger: '.hero', start: 'top top', end: 'bottom top', scrub: 1 },
+            y: 100, opacity: 0.3
+        });
+
+        const marqueeTrack = document.querySelector('.marquee-track');
+        document.querySelector('.marquee').addEventListener('mouseenter', () => {
+            marqueeTrack.style.animationPlayState = 'paused';
+        });
+        document.querySelector('.marquee').addEventListener('mouseleave', () => {
+            marqueeTrack.style.animationPlayState = 'running';
+        });
+
+        const counters = document.querySelectorAll('[data-count]');
+        counters.forEach(counter => {
+            const target = parseInt(counter.getAttribute('data-count'));
+            ScrollTrigger.create({
+                trigger: counter, start: 'top 85%', once: true,
+                onEnter: () => {
+                    gsap.to(counter, {
+                        duration: 2, innerText: target, snap: { innerText: 1 }, ease: 'power2.out',
+                        onUpdate: function() {
+                            const val = Math.floor(this.targets()[0].innerText);
+                            counter.innerText = '₹' + val.toLocaleString('en-IN') + '+';
+                        }
+                    });
+                }
+            });
+        });
+
+        gsap.utils.toArray('.section-label').forEach(label => {
+            gsap.from(label, {
+                scrollTrigger: { trigger: label, start: 'top 90%' },
+                duration: 0.6, opacity: 0, y: 20, ease: 'power2.out'
+            });
+        });
+
+        gsap.utils.toArray('.section-title h2').forEach(h2 => {
+            gsap.from(h2, {
+                scrollTrigger: { trigger: h2, start: 'top 90%' },
+                duration: 0.8, opacity: 0, y: 30, ease: 'power3.out'
+            });
+        });
+
+        gsap.utils.toArray('.section-title p').forEach(p => {
+            gsap.from(p, {
+                scrollTrigger: { trigger: p, start: 'top 92%' },
+                duration: 0.8, opacity: 0, y: 20, delay: 0.15, ease: 'power2.out'
+            });
+        });
+
+        gsap.utils.toArray('.pricing-card').forEach((card, i) => {
+            gsap.from(card, {
+                scrollTrigger: { trigger: card, start: 'top 88%' },
+                duration: 0.9, opacity: 0, y: 60, scale: 0.95,
+                delay: i * 0.15, ease: 'power3.out'
+            });
+        });
+
+        gsap.utils.toArray('.process-step').forEach((step, i) => {
+            gsap.from(step, {
+                scrollTrigger: { trigger: step, start: 'top 90%' },
+                duration: 0.8, opacity: 0, y: 50, delay: i * 0.12, ease: 'power3.out'
+            });
+        });
+
+        gsap.utils.toArray('.faq-item').forEach((item, i) => {
+            gsap.from(item, {
+                scrollTrigger: { trigger: item, start: 'top 92%' },
+                duration: 0.6, opacity: 0, x: -30, delay: i * 0.08, ease: 'power2.out'
+            });
+        });
+
+        gsap.utils.toArray('.milestone-box').forEach((box, i) => {
+            gsap.from(box, {
+                scrollTrigger: { trigger: box, start: 'top 88%' },
+                duration: 1, opacity: 0, scale: 0.9, delay: i * 0.15, ease: 'power3.out'
+            });
+        });
+
+        gsap.from('.about-company-grid', {
+            scrollTrigger: { trigger: '.about-company', start: 'top 80%' },
+            duration: 1, opacity: 0, y: 50, ease: 'power3.out'
+        });
+
+        gsap.from('.newsletter-wrap', {
+            scrollTrigger: { trigger: '.newsletter-wrap', start: 'top 88%' },
+            duration: 0.9, opacity: 0, scale: 0.95, ease: 'power3.out'
+        });
+
+        gsap.utils.toArray('.contact-links .btn').forEach((btn, i) => {
+            gsap.from(btn, {
+                scrollTrigger: { trigger: '.contact-links', start: 'top 90%' },
+                duration: 0.7, opacity: 0, y: 30, delay: i * 0.12, ease: 'power2.out'
+            });
+        });
+
+        document.querySelectorAll('.btn').forEach(btn => {
+            btn.addEventListener('mousemove', (e) => {
+                const rect = btn.getBoundingClientRect();
+                const x = e.clientX - rect.left - rect.width / 2;
+                const y = e.clientY - rect.top - rect.height / 2;
+                btn.style.transform = `translate(${x * 0.2}px, ${y * 0.2}px) translateY(-3px)`;
+            });
+            btn.addEventListener('mouseleave', () => {
+                btn.style.transform = '';
+            });
+        });
+
+        document.getElementById('newsletterBtn').addEventListener('click', () => {
+            const email = document.getElementById('newsletterEmail').value;
+            if (!email || !email.includes('@')) {
+                showToast('Please enter a valid email', 'error');
+                return;
+            }
+            showToast('✅ Subscribed successfully!', 'success');
+            document.getElementById('newsletterEmail').value = '';
+        });
+
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function(e) {
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    e.preventDefault();
+                    target.scrollIntoView({ behavior: 'smooth' });
+                }
+            });
+        });
+
+        console.log('🚀 JD Asset Management — Fully Loaded!');
+    </script>
+</body>
+</html>
