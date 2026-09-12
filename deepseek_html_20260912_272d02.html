@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>JD Asset Management Logo Generator</title>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        body {
+            margin: 0;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            background: #f5f0e8;
+            font-family: 'Inter', sans-serif;
+            gap: 30px;
+            padding: 40px 20px;
+        }
+
+        .logo-preview {
+            background: #ffffff;
+            padding: 40px;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(10, 22, 40, 0.15);
+        }
+
+        .download-btn {
+            padding: 16px 40px;
+            background: linear-gradient(135deg, #d4af37, #b8941e);
+            color: #fff;
+            border: none;
+            border-radius: 12px;
+            font-size: 16px;
+            font-weight: 800;
+            cursor: pointer;
+            transition: 0.3s;
+            box-shadow: 0 10px 30px rgba(212, 175, 55, 0.3);
+            letter-spacing: 0.5px;
+        }
+
+        .download-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 15px 40px rgba(212, 175, 55, 0.5);
+        }
+
+        .info {
+            text-align: center;
+            color: #6d7888;
+            font-size: 14px;
+            max-width: 500px;
+            line-height: 1.6;
+        }
+    </style>
+</head>
+<body>
+    <div class="logo-preview">
+        <canvas id="logoCanvas" width="1000" height="1000"></canvas>
+    </div>
+
+    <button class="download-btn" onclick="downloadLogo()">⬇ Download PNG</button>
+
+    <div class="info">
+        Click the button above to download your logo as high-resolution PNG file.<br>
+        File name: <b>jd-asset-management-logo.png</b>
+    </div>
+
+    <script>
+        const canvas = document.getElementById('logoCanvas');
+        const ctx = canvas.getContext('2d');
+
+        // Colors
+        const navy = '#0a1628';
+        const navy2 = '#132044';
+        const gold = '#d4af37';
+        const gold2 = '#f0ce79';
+        const goldDark = '#b8941e';
+
+        // Clear
+        ctx.clearRect(0, 0, 1000, 1000);
+
+        // White circle background
+        ctx.beginPath();
+        ctx.arc(500, 500, 480, 0, Math.PI * 2);
+        ctx.fillStyle = '#ffffff';
+        ctx.fill();
+
+        // Outer navy border circle
+        ctx.beginPath();
+        ctx.arc(500, 500, 470, 0, Math.PI * 2);
+        ctx.lineWidth = 20;
+        ctx.strokeStyle = navy;
+        ctx.stroke();
+
+        // Inner gold border circle
+        ctx.beginPath();
+        ctx.arc(500, 500, 440, 0, Math.PI * 2);
+        ctx.lineWidth = 6;
+        ctx.strokeStyle = gold;
+        ctx.stroke();
+
+        // === JD MONOGRAM ===
+        // Big J (navy)
+        ctx.font = 'bold 340px Georgia, serif';
+        ctx.fillStyle = navy;
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'middle';
+        ctx.fillText('J', 380, 380);
+
+        // Big D (navy)
+        ctx.fillText('D', 630, 380);
+
+        // === GOLD SWOOSH (arrow curve) ===
+        ctx.beginPath();
+        ctx.moveTo(280, 520);
+        ctx.bezierCurveTo(400, 350, 620, 350, 780, 280);
+        ctx.lineWidth = 18;
+        ctx.strokeStyle = gold;
+        ctx.lineCap = 'round';
+        ctx.stroke();
+
+        // Arrow head
+        ctx.beginPath();
+        ctx.moveTo(780, 280);
+        ctx.lineTo(720, 270);
+        ctx.lineTo(750, 330);
+        ctx.closePath();
+        ctx.fillStyle = gold;
+        ctx.fill();
+
+        // === SMALL BAR CHART (inside D) ===
+        ctx.fillStyle = gold;
+        ctx.fillRect(560, 420, 18, 60);
+        ctx.fillRect(590, 390, 18, 90);
+        ctx.fillRect(620, 350, 18, 130);
+
+        // === "JD" small text below ===
+        ctx.font = 'bold 90px Georgia, serif';
+        ctx.fillStyle = navy;
+        ctx.textAlign = 'center';
+        ctx.fillText('JD', 500, 640);
+
+        // === "ASSET MANAGEMENT" text ===
+        ctx.font = 'bold 62px Georgia, serif';
+        ctx.fillStyle = navy;
+        ctx.fillText('ASSET MANAGEMENT', 500, 720);
+
+        // === Gold divider line with diamond ===
+        // Left line
+        ctx.beginPath();
+        ctx.moveTo(200, 770);
+        ctx.lineTo(460, 770);
+        ctx.lineWidth = 3;
+        ctx.strokeStyle = gold;
+        ctx.stroke();
+
+        // Right line
+        ctx.beginPath();
+        ctx.moveTo(540, 770);
+        ctx.lineTo(800, 770);
+        ctx.lineWidth = 3;
+        ctx.strokeStyle = gold;
+        ctx.stroke();
+
+        // Diamond in center
+        ctx.beginPath();
+        ctx.moveTo(500, 755);
+        ctx.lineTo(515, 770);
+        ctx.lineTo(500, 785);
+        ctx.lineTo(485, 770);
+        ctx.closePath();
+        ctx.fillStyle = gold;
+        ctx.fill();
+
+        // === "LEARN · INVEST · GROW" tagline ===
+        ctx.font = '600 32px Inter, Arial, sans-serif';
+        ctx.fillStyle = navy;
+        ctx.textAlign = 'center';
+        ctx.fillText('LEARN  ·  INVEST  ·  GROW', 500, 850);
+
+        // === Download Function ===
+        function downloadLogo() {
+            const link = document.createElement('a');
+            link.download = 'jd-asset-management-logo.png';
+            link.href = canvas.toDataURL('image/png');
+            link.click();
+        }
+    </script>
+</body>
+</html>
